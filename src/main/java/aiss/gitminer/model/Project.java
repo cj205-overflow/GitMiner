@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity
+@Entity // El decorador @Entity indica que esta clase es una entidad JPA, JPA es Java Persistence API y es la API de Java para la persistencia de datos
 @Table(name = "Project")
 public class Project {
 
@@ -27,6 +27,8 @@ public class Project {
     @JsonProperty("commits")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "projectId")
+    // Cuando se pone name solo en el JoinColumn, se refiere a la columna de la tabla de la base de datos
+    // OJO!! -> Cuando no ponesreferencedColumnName JPA asume automáticamente que estás apuntando a la columna id de la entidad referenciada
     private List<Commit> commits;
 
     @JsonProperty("issues")
@@ -37,6 +39,15 @@ public class Project {
     public Project() {
         commits = new ArrayList<>();
         issues = new ArrayList<>();
+    }
+
+    // Constructor (ya que se usa en peticiones POST)
+    public Project(String id, String name, String webUrl, List<Commit> commits, List<Issue> issues) {
+        this.id = id;
+        this.name = name;
+        this.webUrl = webUrl;
+        this.commits = commits;
+        this.issues = issues;
     }
 
     public String getId() {

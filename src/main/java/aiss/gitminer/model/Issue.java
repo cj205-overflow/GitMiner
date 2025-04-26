@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "Issue")
 public class Issue {
 
-    @Id
+    @Id // Implica que el campo será único y no nulo en la base de datos
     @JsonProperty("id")
     private String id;
 
@@ -35,7 +35,8 @@ public class Issue {
     @JsonProperty("closed_at")
     private String closedAt;
     @JsonProperty("labels")
-    @ElementCollection
+    @ElementCollection // Usamos este decorador para indicar que el campo es una colección de elementos
+    // JPA los guardará en una tabla separada
     private List<String> labels;
     @JsonProperty("author")
     //@NotEmpty(message = "The author of the issue cannot be empty")
@@ -44,7 +45,8 @@ public class Issue {
     private User author;
     @JsonProperty("assignee")
     @JoinColumn(name = "assignee_id",referencedColumnName = "id")
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL) // Esto significa que las operaciones que se hacen sobre Issue se harán también sobre User
+    // @OneToOne indica la relación entre Issue y User
     private User assignee;
     @JsonProperty("upvotes")
     private Integer upvotes;
@@ -56,7 +58,7 @@ public class Issue {
 
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "issueId")
+    @JoinColumn(name = "issueId") // El nombre de la columna en la tabla de la base de datos Comment
     private List<Comment> comments;
 
     public String getId() {

@@ -9,21 +9,23 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "Comment")
+@Entity // El decorador @Entity indica que esta clase es una entidad JPA, JPA es Java Persistence API y es la API de Java para la persistencia de datos
+@Table(name = "Comment") // El decorador @Table indica el nombre de la tabla en la base de datos
 public class Comment {
 
-    @Id
+    @Id // El @Id ya implica que es unique y not empty
     @JsonProperty("id")
     private String id;
     @JsonProperty("body")
     @NotEmpty(message = "The message cannot be empty.")
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition="TEXT") // El decorador @Column es para definir el tipo de dato en la base de datos
     private String body;
 
     @JsonProperty("author")
     @JoinColumn(name = "author_id", referencedColumnName = "id")
-    @OneToOne(cascade=CascadeType.ALL)
+    // name es el nombre de la columna en la tabla de la base de datos Comment
+    // referencedColumnName es el nombre de la columna en la tabla de la base de datos User que equivale a la columna en Comment
+    @OneToOne(cascade=CascadeType.ALL) // Esto significa que las operaciones que se hacen sobre Comment se harán también sobre User
     private User author;
 
     @JsonProperty("created_at")
