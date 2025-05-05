@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 // El decorador @RestController indica que esta clase es un controlador REST, es decir, que maneja peticiones HTTP y devuelve respuestas en formato JSON
-@RequestMapping("/api/issues") // El decorador @RequestMapping indica la ruta base para todas las peticiones que maneja este controlador
+@RequestMapping("/gitminer/issues") // El decorador @RequestMapping indica la ruta base para todas las peticiones que maneja este controlador
 public class IssueController {
     private final IssueRepository issueRepository;
     // Constructor de la clase

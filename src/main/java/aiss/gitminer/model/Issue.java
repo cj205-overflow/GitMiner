@@ -17,9 +17,6 @@ public class Issue {
     @Id // Implica que el campo será único y no nulo en la base de datos
     @JsonProperty("id")
     private String id;
-
-    @JsonProperty("ref_id")
-    private String refId;
     @JsonProperty("title")
     private String title;
     @JsonProperty("description")
@@ -27,7 +24,6 @@ public class Issue {
     private String description;
     @JsonProperty("state")
     private String state;
-
     @JsonProperty("created_at")
     private String createdAt;
     @JsonProperty("updated_at")
@@ -48,14 +44,8 @@ public class Issue {
     @OneToOne(cascade=CascadeType.ALL) // Esto significa que las operaciones que se hacen sobre Issue se harán también sobre User
     // @OneToOne indica la relación entre Issue y User
     private User assignee;
-    @JsonProperty("upvotes")
-    private Integer upvotes;
-    @JsonProperty("downvotes")
-    private Integer downvotes;
-
-    @JsonProperty("web_url")
-    private String webUrl;
-
+    @JsonProperty("votes")
+    private Integer votes;
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "issueId") // El nombre de la columna en la tabla de la base de datos Comment
@@ -67,14 +57,6 @@ public class Issue {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getRefId() {
-        return refId;
-    }
-
-    public void setRefId(String refId) {
-        this.refId = refId;
     }
 
     public String getTitle() {
@@ -149,28 +131,12 @@ public class Issue {
         this.assignee = assignee;
     }
 
-    public Integer getUpvotes() {
-        return upvotes;
+    public Integer getVotes() {
+        return votes;
     }
 
-    public void setUpvotes(Integer upvotes) {
-        this.upvotes = upvotes;
-    }
-
-    public Integer getDownvotes() {
-        return downvotes;
-    }
-
-    public void setDownvotes(Integer downvotes) {
-        this.downvotes = downvotes;
-    }
-
-    public String getWebUrl() {
-        return webUrl;
-    }
-
-    public void setWebUrl(String webUrl) {
-        this.webUrl = webUrl;
+    public void setVotes(Integer votes) {
+        this.votes = votes;
     }
 
     public List<Comment> getComments() {
@@ -188,10 +154,6 @@ public class Issue {
         sb.append("id");
         sb.append('=');
         sb.append(((this.id == null) ? "<null>" : this.id));
-        sb.append(',');
-        sb.append("refId");
-        sb.append('=');
-        sb.append(((this.refId == null) ? "<null>" : this.refId));
         sb.append(',');
         sb.append("title");
         sb.append('=');
@@ -229,13 +191,9 @@ public class Issue {
         sb.append('=');
         sb.append(((this.assignee == null) ? "<null>" : this.assignee));
         sb.append(',');
-        sb.append("upvotes");
+        sb.append("votes");
         sb.append('=');
-        sb.append(((this.upvotes == null) ? "<null>" : this.upvotes));
-        sb.append(',');
-        sb.append("downvotes");
-        sb.append('=');
-        sb.append(((this.downvotes == null) ? "<null>" : this.downvotes));
+        sb.append(((this.votes == null) ? "<null>" : this.votes));
         sb.append(',');
         sb.append("comments");
         sb.append('=');
