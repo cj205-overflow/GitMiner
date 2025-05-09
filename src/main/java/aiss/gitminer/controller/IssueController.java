@@ -3,6 +3,7 @@ package aiss.gitminer.controller;
 import aiss.gitminer.exception.IssueNotFoundException;
 import aiss.gitminer.model.Comment;
 import aiss.gitminer.model.Issue;
+import aiss.gitminer.repository.CommentRepository;
 import aiss.gitminer.repository.IssueRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,10 +29,13 @@ import java.util.Optional;
 @RequestMapping("/gitminer/issues") // El decorador @RequestMapping indica la ruta base para todas las peticiones que maneja este controlador
 public class IssueController {
     private final IssueRepository issueRepository;
+    private final CommentRepository commentRepository;
+
     // Constructor de la clase
     @Autowired
-    public IssueController(IssueRepository issueRepository) {
+    public IssueController(IssueRepository issueRepository, CommentRepository commentRepository) {
         this.issueRepository = issueRepository;
+        this.commentRepository = commentRepository;
     }
 
     // OPERACIONES A REALIZAR
@@ -119,6 +123,7 @@ public class IssueController {
                     content = { @Content(schema= @Schema())})
     })
     // GET http://localhost:8080/api/issues/{id}/comments
+
     @GetMapping("/{id}/comments")
     public List<Comment> getIssueComments(@Parameter(description="ID of the issue you want to get comments ")
                                           @PathVariable String id,
@@ -144,7 +149,8 @@ public class IssueController {
         if(!issue.isPresent()){
             throw new IssueNotFoundException();
         }
-        pageComments = issueRepository.findCommentsByIssueId(id, paging);
+        pageComments = commentRepository.findCommentsByIssueId(id, paging);
         return pageComments.getContent();
     }
+
 }

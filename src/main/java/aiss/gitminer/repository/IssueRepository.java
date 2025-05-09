@@ -12,11 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IssueRepository extends JpaRepository<Issue, String> {
 
-    @Query(value = "SELECT * FROM comment WHERE issue_id = :issueId",
-            countQuery = "SELECT COUNT(*) FROM comment WHERE issue_id = :issueId",
-            nativeQuery = true)
-    Page<Comment> findCommentsByIssueId(@Param("issueId") String issueId, Pageable pageable);
-
     //Definimos los métodos para el filtrado de las issues por estado y autorId
     Page<Issue> findByState(String state, Pageable pageable);
     Page<Issue> findByAuthorId(String authorId, Pageable pageable);

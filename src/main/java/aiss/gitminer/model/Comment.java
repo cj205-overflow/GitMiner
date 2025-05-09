@@ -34,6 +34,7 @@ public class Comment {
     @JsonProperty("updated_at")
     private String updatedAt;
 
+
     public String getId() {
         return id;
     }
