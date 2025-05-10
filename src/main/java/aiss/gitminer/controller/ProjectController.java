@@ -49,7 +49,7 @@ public class ProjectController {
                     content = { @Content(schema= @Schema())})
 
     })
-    // GET http://localhost:8080/api/projects
+    // GET http://localhost:8080/api/projects?page=0&size=10&order=name
     @GetMapping
     public List<Project> findAll(
             @Parameter(description="Zero-based page index (0..N), default 0")
@@ -114,9 +114,66 @@ public class ProjectController {
             required = true,
             content = @Content(schema = @Schema(implementation = Project.class)))
         @Valid @RequestBody Project project){
-        Project _project = projectRepository.save(
+        Project createdProject = projectRepository.save(
                 new Project(project.getId(),project.getName(), project.getWebUrl(), project.getCommits(), project.getIssues())
         );
-        return _project;
+        return createdProject;
+    }
+
+    // Añadimos operaciones de DELETE y PUT
+
+    @Operation(
+            summary = "Delete a project",
+            description = "Deletes a project by its ID",
+            tags = { "project", "delete"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Project Deleted"),
+            @ApiResponse(responseCode = "404", description = "Project Not Found",
+                    content = { @Content(schema= @Schema())})
+    })
+
+    // DELETE http://localhost:8080/api/projects/{id}
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@Parameter(description="ID of the Project to be deleted")@PathVariable String id) throws ProjectNotFoundException {
+        Optional<Project> project = projectRepository.findById(id);
+        if(!project.isPresent()){
+            throw new ProjectNotFoundException();
+        }
+        projectRepository.deleteById(id);
+        System.out.println("Project with ID " + id + " deleted");
+    }
+
+    @Operation(
+            summary = "Update a project",
+            description = "Updates a project by its ID and giving the new data in the body of the request",
+            tags = { "project", "put"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Project Updated",
+                    content = { @Content(schema= @Schema(implementation = Project.class), mediaType= "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Project Not Found",
+                    content = { @Content(schema= @Schema())})
+    })
+    // PUT http://localhost:8080/api/projects/{id}
+    @PutMapping("/{id}")
+    public Project update(@Parameter(description="ID of the Project to be updated")@PathVariable String id,
+                          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                  description = "Project to be updated",
+                                  required = true,
+                                  content = @Content(schema = @Schema(implementation = Project.class)))
+                          @Valid @RequestBody Project project) throws ProjectNotFoundException {
+        Optional<Project> existingProject = projectRepository.findById(id);
+        if(!existingProject.isPresent()){
+            throw new ProjectNotFoundException();
+        }
+        existingProject.get().setId(project.getId());
+        existingProject.get().setName(project.getName());
+        existingProject.get().setWebUrl(project.getWebUrl());
+        existingProject.get().setCommits(project.getCommits());
+        existingProject.get().setIssues(project.getIssues());
+        projectRepository.save(existingProject.get()); // Guardamos los cambios
+        return existingProject.get();
     }
 }
